@@ -7,7 +7,7 @@ import warnings
 from typing import Callable, Optional, List
 
 from nuclr.model.modules import ResidualBlock
-from .data import Data
+from data import Data
 from monotonicnetworks.functional import direct_norm
 from modules import PeriodicEmbedding
 from RNN import RNN
@@ -88,6 +88,10 @@ class NuCLRModel(Base):
 
     def forward_with_embeddings(self, x, embs):  # embs: [ batch_size, 2 * hidden_dim ]
         x = self.embed_input(x, embs)
+        x = self.nonlinear(x)  # [ batch_size, hidden_dim ]
+        return torch.sigmoid(self.readout(x))  # [ batch_size, output_dim ]
+
+    def forward_with_embeddings_recons(self, x, embs):  # embs: [ batch_size, 2 * hidden_dim ]
         x = self.nonlinear(x)  # [ batch_size, hidden_dim ]
         return torch.sigmoid(self.readout(x))  # [ batch_size, output_dim ]
 

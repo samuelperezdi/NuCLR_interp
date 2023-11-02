@@ -102,13 +102,7 @@ def BW2_mass_formula(Z, N):
     return Eb / A * 1000  # keV
 
 
-def WS4_mass_formula(min_included_nucl):
-    
-    df = get_nuclear_data(False)
-    df = df[
-        (df.z > min_included_nucl) & (df.n > min_included_nucl)
-    ]
-    
+def WS4_mass_formula(df):
     N = df["n"].values
     Z = df["z"].values
     A = N + Z
@@ -257,7 +251,8 @@ def get_stability_from(string):
 
 @apply_to_df_col("isospin")
 def get_isospin_from(string):
-    return float(eval(string.replace(" ", "float('nan')")))
+    return float(eval(string.replace(" ", "nan"), {"nan": float('nan')}))
+
 
 
 def get_binding_energy_from(df):
